@@ -1,11 +1,18 @@
-Class Particle:
+
+class Particle:
     G = 6.67430e-11
-    def __init__(self,  mass, pos, velocity, acc, prev_pos = pos,
-     prev_vel = velocity, prev_acc = acc, resolution = 1):
+    def __init__(self,  mass, pos, velocity, acc, prev_pos = [0, 0],
+     prev_vel = [0, 0], prev_acc = [0, 0], resolution = 1):
         self.mass = mass #scalor
         self.pos = pos #vector
         self.velocity = velocity #vector
         self.acc = acc #vector
+
+        self.prev_pos = prev_pos
+        self.prev_vel = prev_vel
+        self.prev_acc = prev_acc
+
+        self.resolution = resolution
 
     def momentum(self):
         """calculate the momentum of the particle"""
@@ -33,11 +40,22 @@ Class Particle:
         return [diff[0]/mag, diff[1]/mag]
 
     def calcA(self, other):
+        """calculate the acceleration for this moment"""
         F = self.calcForce(self, other)
         return [F[0]/self.mass, F[1]/self.mass]
 
     def calcV(self):
-        pass
+        """calculate velocity for this moment"""
+        pv = self.prev_vel
+        pa = self.prev_acc
+        dv = [pa[0]*self.resolution, pa[1]*self.resolution]
+
+        return [pv[0] + dv[0], pv[1] + dv[1]]
 
     def calcPos(self):
-        pass
+        """calculate position for this moment"""
+        pp = self.prev_pos
+        pv = self.prev_vel
+        dp = [pv[0]*self.resolution, pv[1]*self.resolution]
+
+        return [pp[0]+dp[0], pp[1]+dp[1]]
