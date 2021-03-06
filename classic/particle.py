@@ -1,6 +1,6 @@
 
 class Particle:
-    G = 6.67430e-11
+
     def __init__(self,  mass, pos, velocity, acc, prev_pos = [0, 0],
      prev_vel = [0, 0], prev_acc = [0, 0], resolution = 1):
         self.mass = mass #scalor
@@ -13,35 +13,34 @@ class Particle:
         self.prev_acc = prev_acc
 
         self.resolution = resolution
+        self.G = 6.67430e-11
 
     def momentum(self):
         """calculate the momentum of the particle"""
         return [self.mass*self.velocity[0], self.mass*self.velocity[1]]
 
-    def calcForce(self, other):
+    def calcForce(self, otherP):
         """calculate the gravitation force vector"""
         m1 = self.mass
-        m2 = other.mass
-        p1 = self.pos
-        p2 = other.pos
-        r = self.calcDistance(self, other)
-        rhat = self.unitVector(self, other)
-        FMag = (m1*m2*G)/r**2
+        m2 = otherP.mass
+        r = self.calcDistance(otherP)
+        rhat = self.unitVector(otherP)
+        FMag = (m1*m2*self.G)/r**2
         return [FMag*rhat[0], FMag*rhat[1]]
 
-    def calcDistance(self, other):
+    def calcDistance(self, otherP):
         """calculate the distance between two objects"""
-        return ((self.pos[0] - other.pos[0])**2 + (self.pos[1] - other.pos[1])**2)**0.5
+        return ((self.pos[0] - otherP.pos[0])**2 + (self.pos[1] - otherP.pos[1])**2)**0.5
 
-    def unitVector(self, other):
+    def unitVector(self, otherP):
         """calculate unit vector"""
-        diff = [self.pos[0] - other.pos[0], self.pos[1] - other.pos[1]]
-        mag = calcDistance(self, other)
+        diff = [otherP.pos[0] - self.pos[0], otherP.pos[1] - self.pos[1]]
+        mag = self.calcDistance(otherP)
         return [diff[0]/mag, diff[1]/mag]
 
-    def calcA(self, other):
+    def calcA(self, otherP):
         """calculate the acceleration for this moment"""
-        F = self.calcForce(self, other)
+        F = self.calcForce(otherP)
         return [F[0]/self.mass, F[1]/self.mass]
 
     def calcV(self):
