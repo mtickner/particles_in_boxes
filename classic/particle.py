@@ -36,6 +36,7 @@ class Particle:
         """calculate unit vector"""
         diff = [otherP.pos[0] - self.pos[0], otherP.pos[1] - self.pos[1]]
         mag = self.calcDistance(otherP)
+        
         return [diff[0]/mag, diff[1]/mag]
 
     def calcA(self, otherP):
@@ -58,3 +59,15 @@ class Particle:
         dp = [pv[0]*self.resolution, pv[1]*self.resolution]
 
         return [pp[0]+dp[0], pp[1]+dp[1]]
+
+    def next(self, otherP):
+        """create next particle instance"""
+        p_i = self.calcPos()
+        v_i = self.calcV()
+        a_i = self.calcA(otherP)
+
+
+        part = Particle(self.mass, p_i, v_i, a_i,
+                        prev_pos = self.pos, prev_vel = self.velocity,
+                        prev_acc = self.acc, resolution = self.resolution)
+        return part
